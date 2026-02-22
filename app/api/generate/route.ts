@@ -1,4 +1,4 @@
-import { anthropic } from '@ai-sdk/anthropic'
+import { google } from '@ai-sdk/google'
 import { generateText } from 'ai'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -27,7 +27,7 @@ Respond ONLY with valid JSON, no markdown. Format:
 Be creative! Mix wordplay, portmanteaus, metaphors, and invented words. Avoid generic names.`
 
     const { text } = await generateText({
-      model: anthropic('claude-3-5-haiku-latest'),
+      model: google('gemini-2.5-flash-lite'),
       prompt,
     })
 
