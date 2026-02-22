@@ -1,7 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { anthropic } from '@ai-sdk/anthropic'
+import { generateText } from 'ai'
 import { NextRequest, NextResponse } from 'next/server'
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,8 +9,6 @@ export async function POST(req: NextRequest) {
     if (!description || typeof description !== 'string' || description.length > 300) {
       return NextResponse.json({ error: 'Invalid description' }, { status: 400 })
     }
-
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
     const prompt = `You are a creative business naming expert. Given a business/project description, generate exactly 10 unique, creative name suggestions.
 
@@ -29,8 +26,10 @@ Respond ONLY with valid JSON, no markdown. Format:
 
 Be creative! Mix wordplay, portmanteaus, metaphors, and invented words. Avoid generic names.`
 
-    const result = await model.generateContent(prompt)
-    const text = result.response.text()
+    const { text } = await generateText({
+      model: anthropic('claude-3-5-haiku-latest'),
+      prompt,
+    })
 
     // Parse JSON from response (handle possible markdown wrapping)
     const jsonMatch = text.match(/\{[\s\S]*\}/)
